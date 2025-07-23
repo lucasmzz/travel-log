@@ -5,9 +5,13 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "@nuxtjs/color-mode",
     "@nuxt/icon",
+    "@pinia/nuxt",
   ],
   devtools: { enabled: true },
   compatibilityDate: "2025-07-15",
+  colorMode: {
+    dataValue: "theme",
+  },
   app: {
     head: {
       title: "MyTravels",
