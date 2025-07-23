@@ -1,12 +1,14 @@
 import { defineConfig } from "drizzle-kit";
 
 export default defineConfig({
-  dialect: process.NODE_ENV === 'production' ? 'turso' : 'sqlite',
-  schema: "./server/database/schema.ts",
-  out: "./server/database/migrations",
+  out: "./lib/db/migrations",
+  schema: "./lib/db/schema/index.ts",
+  dialect: "turso",
   dbCredentials: {
-    url: process.NODE_ENV === 'production' ? process.env.TURSO_DATABASE_URL! : 'file:local.db',
-    authToken: process.NODE_ENV === 'production' ? process.env.TURSO_AUTH_TOKEN : undefined,
+    url: process.env.TURSO_DATABASE_URL!,
+    authToken:
+      process.NODE_ENV === "production"
+        ? process.env.TURSO_AUTH_TOKEN
+        : undefined,
   },
-
 });

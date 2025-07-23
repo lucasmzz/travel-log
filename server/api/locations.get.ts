@@ -1,9 +1,8 @@
-import { db } from '../database/db';
-import { locations } from '../database/schema';
+import db from "../../lib/db";
+import { location } from "../../lib/db/schema";
 
 export default defineEventHandler(async () => {
-  // Fetch all locations ordered by createdAt descending
-  const result = await db.select().from(locations);
+  const result = await db.select().from(location);
 
   return {
     locations: result,
