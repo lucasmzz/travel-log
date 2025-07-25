@@ -1,5 +1,6 @@
 import { sqliteTable, text, int, real } from "drizzle-orm/sqlite-core";
 import { user } from "./auth";
+import { createInsertSchema } from "drizzle-zod";
 
 export const location = sqliteTable("location", {
   id: int().primaryKey({ autoIncrement: true }),
@@ -20,7 +21,20 @@ export const location = sqliteTable("location", {
     .$onUpdate(() => Date.now()),
 });
 
-export const locationLog = sqliteTable("locationLog", {
+export const insertLocation = createInsertSchema(location, {
+  name: (field) => field.min(1).max(100),
+  description: (field) => field.max(1000),
+  lat: (field) => field.min(-90).max(90),
+  long: (field) => field.min(-180).max(180),
+}).omit({
+  id: true,
+  slug: true,
+  userId: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+const locationLog = sqliteTable("locationLog", {
   id: int().primaryKey({ autoIncrement: true }),
   name: text().notNull(),
   description: text(),

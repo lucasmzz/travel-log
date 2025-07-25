@@ -6,6 +6,8 @@ export default defineNuxtConfig({
     "@nuxtjs/color-mode",
     "@nuxt/icon",
     "@pinia/nuxt",
+    "@vee-validate/nuxt",
+    "nuxt-csurf",
   ],
   devtools: { enabled: true },
   compatibilityDate: "2025-07-15",

@@ -10,7 +10,7 @@ const authStore = useAuthStore();
 
 <template>
   <section class="text-center">
-    <div class="card card-border bg-base-100 w-96">
+    <div class="card card-border bg-base-300 w-96">
       <div class="card-body">
         <h2 class="card-title">Login to continue</h2>
         <p class="text-start">

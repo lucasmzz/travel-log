@@ -16,8 +16,6 @@ const authStore = useAuthStore();
     <div class="flex grow justify-end px-2 items-center gap-6">
       <ThemeToggle />
 
-      <NuxtLink to="/about">About</NuxtLink>
-
       <div v-if="authStore.user" class="flex items-stretch">
         <div class="dropdown dropdown-end">
           <div tabIndex="0" role="button" class="btn btn-soft rounded-field">
