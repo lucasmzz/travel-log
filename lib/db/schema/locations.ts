@@ -2,6 +2,7 @@ import { sqliteTable, text, int, real } from "drizzle-orm/sqlite-core";
 import { user } from "./auth";
 import { createInsertSchema } from "drizzle-zod";
 import { unique } from "drizzle-orm/gel-core";
+import z from "drizzle-zod";
 
 export const location = sqliteTable(
   "location",
@@ -26,7 +27,7 @@ export const location = sqliteTable(
   (t) => [unique().on(t.name, t.userId)]
 );
 
-export const insertLocation = createInsertSchema(location, {
+export const InsertLocation = createInsertSchema(location, {
   name: (field) => field.min(1).max(100),
   description: (field) => field.max(1000),
   lat: (field) => field.min(-90).max(90),
@@ -79,3 +80,5 @@ export const locationLogImage = sqliteTable("locationLogImage", {
     .$default(() => Date.now())
     .$onUpdate(() => Date.now()),
 });
+
+export type InsertLocation = z.infer<typeof InsertLocation>;

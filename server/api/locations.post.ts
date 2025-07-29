@@ -1,10 +1,11 @@
-import { insertLocation, location } from "../../lib/db/schema";
-import db from "../../lib/db";
-import { DrizzleError, eq, and } from "drizzle-orm";
+import { InsertLocation } from "../../lib/db/schema";
+import { DrizzleError } from "drizzle-orm";
 import slugify from "slug";
-import { customAlphabet } from "nanoid";
-
-const nanoid = customAlphabet("1234567890abcdefghijklmnopqrstuvwxyz", 5);
+import {
+  findLocationByName,
+  findUniqueSlug,
+  insertLocation,
+} from "../../lib/db/queries/location";
 
 export default defineEventHandler(async (event) => {
   if (!event.context.user) {
@@ -17,7 +18,7 @@ export default defineEventHandler(async (event) => {
     );
   }
 
-  const result = await readValidatedBody(event, insertLocation.safeParse);
+  const result = await readValidatedBody(event, InsertLocation.safeParse);
 
   if (!result.success) {
     return sendError(
@@ -29,12 +30,10 @@ export default defineEventHandler(async (event) => {
     );
   }
 
-  const existingLocation = await db.query.location.findFirst({
-    where: and(
-      eq(location.name, result.data.name),
-      eq(location.userId, event.context.user.id)
-    ),
-  });
+  const existingLocation = await findLocationByName(
+    result.data,
+    event.context.user.id
+  );
 
   if (existingLocation) {
     return sendError(
@@ -46,33 +45,10 @@ export default defineEventHandler(async (event) => {
     );
   }
 
-  let slug = slugify(result.data.name);
-  let existing = !!(await db.query.location.findFirst({
-    where: eq(location.slug, slug),
-  }));
-
-  while (existing) {
-    const id = nanoid();
-    const idSlug = `${slug}-${id}`;
-    existing = !!(await db.query.location.findFirst({
-      where: eq(location.slug, idSlug),
-    }));
-
-    if (!existing) {
-      slug = idSlug;
-    }
-  }
+  const slug = await findUniqueSlug(slugify(result.data.name));
 
   try {
-    const [created] = await db
-      .insert(location)
-      .values({
-        ...result.data,
-        userId: event.context.user.id,
-        slug,
-      })
-      .returning();
-    return created;
+    return insertLocation(result.data, slug, event.context.user.id);
   } catch (e) {
     const error = e as DrizzleError;
     if (error.message) {

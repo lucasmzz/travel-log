@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { toTypedSchema } from "@vee-validate/zod";
-import { insertLocation } from "../../../lib/db/schema/locations";
+import { InsertLocation } from "../../../lib/db/schema/locations";
 import { useForm } from "vee-validate";
 import FormField from "~/components/form-field.vue";
 
@@ -11,7 +11,7 @@ const loading = ref(false);
 const submitted = ref(false);
 const submitError = ref("");
 const { handleSubmit, errors, meta } = useForm({
-  validationSchema: toTypedSchema(insertLocation),
+  validationSchema: toTypedSchema(InsertLocation),
 });
 
 const onSubmit = handleSubmit(async (values) => {
