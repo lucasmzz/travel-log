@@ -1,10 +1,6 @@
-import db from "../../lib/db";
-import { location } from "../../lib/db/schema";
+import defineAuthenticatedEventHandler from "../utils/define-authenticated-event-handler";
+import { findLocations } from "../../lib/db/queries/location";
 
-export default defineEventHandler(async () => {
-  const result = await db.select().from(location);
-
-  return {
-    locations: result,
-  };
+export default defineAuthenticatedEventHandler(async (event) => {
+  return findLocations(event.context.user.id);
 });
